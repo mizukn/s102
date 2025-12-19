@@ -10,9 +10,23 @@ int main(int, char**) // Version special du main, ne pas modifier
   // Initialisation du jeu
   Moteur moteur("Mon super jeu vidéo");
 
-  // TODO: charger images, creer personnages, etc.
+  // Charger les images
+  Image fond;
+  Image coffreFerme;
+  Image coffreOuvert;
+  
+  try {
+    fond = Image(moteur, "assets/fond.png");
+    coffreFerme = Image(moteur, "assets/coffre_ferme.png");
+    coffreOuvert = Image(moteur, "assets/coffre_ouvert.png");
+  }
+  catch (const runtime_error& e) {
+    cerr << "Erreur lors du chargement des images : " << e.what() << endl;
+    return 1;
+  }
 
   bool quitter = false;
+  bool coffreEstOuvert = false; // État du coffre
 
   // Boucle de jeu, appelee a chaque fois que l'ecran doit etre mis a jour
   // (en general, 60 fois par seconde)
@@ -28,23 +42,41 @@ int main(int, char**) // Version special du main, ne pas modifier
         case QUITTER_APPUYE:
           quitter = true;
           break;
-        // TODO: gerer les autres evenements
+        
+        // Gérer l'ouverture du coffre avec la barre d'espace
+        case ESPACE_APPUYE: 
+          coffreEstOuvert = true;
+          break;
+        
+        // Gérer la fermeture du coffre quand on relâche la barre d'espace
+        case ESPACE_RELACHE:
+          coffreEstOuvert = false;
+          break;
+        
         default:
           break;
       }
 
-      evenement = moteur.evenementRecu();
+      evenement = moteur. evenementRecu();
     }
 
     // II. Mise à jour de l'état du jeu
 
     // TODO: faire bouger vos personnages, etc.
 
-    // III. Generation de l'image à afficher
+    // III.  Generation de l'image à afficher
 
     moteur.initialiserRendu(); // efface ce qui avait ete affiche precedemment et reinitalise en ecran noir
 
-    // TODO: afficher vos personnages, objets, etc.
+    // Afficher le fond en premier (pour qu'il soit derrière tout le reste)
+    fond.dessiner(0, 0);
+    
+    // Afficher le coffre selon son état
+    if (coffreEstOuvert) {
+      coffreOuvert.dessiner(0, 0);
+    } else {
+      coffreFerme.dessiner(0, 0);
+    }
 
     /*
       Affiche l'image en se cadencant sur la frequence de
@@ -53,7 +85,7 @@ int main(int, char**) // Version special du main, ne pas modifier
       general, 60 images fois par seconde, mais ca peut dependre du
       materiel
     */
-    moteur.finaliserRendu();
+    moteur. finaliserRendu();
   }
 
   return 0;
