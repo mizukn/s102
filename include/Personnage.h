@@ -4,7 +4,10 @@
 #include "Moteur.h"
 #include "Image.h"
 
-// Enumération pour les directions
+// Forward declaration to avoid circular dependency
+class Niveau;
+
+// Énumération pour les directions
 enum Direction {
   GAUCHE,
   DROITE,
@@ -42,7 +45,7 @@ public:
   void deplacer(int dx, int dy);
 
   // Méthode pour vérifier si le personnage peut bouger dans une direction
-  bool peutBougerVers(Direction dir) const;
+  bool peutBougerVers(Direction dir, const Niveau& niveau) const;
 
   // Méthode pour inverser la direction
   void inverserDirection();

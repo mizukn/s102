@@ -2,16 +2,10 @@
 #define AVATAR_H
 
 #include "Personnage.h"
-#include "Ennemi.h"
+#include "Niveau.h"
 
-// Forward declaration pour éviter les dépendances circulaires
-class Ennemi;
-
-class Avatar
+class Avatar :  public Personnage
 {
-private:
-  Personnage _perso;
-
 public:
   // Constructeur
   Avatar(Image& image, int x, int y, Direction direction, int skin_x, int skin_y);
@@ -19,20 +13,14 @@ public:
   // Constructeur par défaut
   Avatar();
 
-  // Méthode pour dessiner l'avatar
-  void dessiner() const;
+  // Méthodes pour déplacer l'avatar avec les touches
+  void allerGauche(const Niveau& niveau);
+  void allerDroite(const Niveau& niveau);
+  void allerHaut(const Niveau& niveau);
+  void allerBas(const Niveau& niveau);
 
-  // Méthodes pour déplacer l'avatar
-  void allerDroite();
-  void allerGauche();
-  void allerHaut();
-  void allerBas();
-
-  // Méthode pour vérifier si l'avatar touche un ennemi
-  bool touche(const Ennemi& ennemi) const;
-
-  // Accesseur pour obtenir le personnage
-  const Personnage& getPersonnage() const;
+  // Méthode pour tester si l'avatar touche un autre personnage
+  bool touche(const Personnage& autre) const;
 };
 
 #endif // AVATAR_H

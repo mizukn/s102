@@ -1,72 +1,58 @@
 #include "Avatar.h"
-#include "Ennemi.h"
 
 // Constructeur par défaut
-Avatar::Avatar()
+Avatar::Avatar() : Personnage()
 {
 }
 
 // Constructeur
-Avatar::Avatar(Image& image, int x, int y, Direction direction, int skin_x, int skin_y)
-  : _perso(image, x, y, direction, skin_x, skin_y)
+Avatar:: Avatar(Image& image, int x, int y, Direction direction, int skin_x, int skin_y)
+  : Personnage(image, x, y, direction, skin_x, skin_y)
 {
-}
-
-// Dessiner l'avatar
-void Avatar::dessiner() const
-{
-  _perso.dessiner();
-}
-
-// Aller à droite
-void Avatar::allerDroite()
-{
-  _perso.regarderDroite();
-  if (_perso.peutBougerVers(DROITE))
-  {
-    _perso.deplacer(TAILLE_CASE, 0);
-  }
 }
 
 // Aller à gauche
-void Avatar::allerGauche()
+void Avatar::allerGauche(const Niveau& niveau)
 {
-  _perso.regarderGauche();
-  if (_perso.peutBougerVers(GAUCHE))
+  regarderGauche();
+  if (peutBougerVers(GAUCHE, niveau))
   {
-    _perso. deplacer(-TAILLE_CASE, 0);
+    deplacer(-TAILLE_CASE, 0);
+  }
+}
+
+// Aller à droite
+void Avatar::allerDroite(const Niveau& niveau)
+{
+  regarderDroite();
+  if (peutBougerVers(DROITE, niveau))
+  {
+    deplacer(TAILLE_CASE, 0);
   }
 }
 
 // Aller en haut
-void Avatar::allerHaut()
+void Avatar::allerHaut(const Niveau& niveau)
 {
-  _perso.regarderHaut();
-  if (_perso.peutBougerVers(HAUT))
+  regarderHaut();
+  if (peutBougerVers(HAUT, niveau))
   {
-    _perso.deplacer(0, -TAILLE_CASE);
+    deplacer(0, -TAILLE_CASE);
   }
 }
 
 // Aller en bas
-void Avatar::allerBas()
+void Avatar::allerBas(const Niveau& niveau)
 {
-  _perso.regarderBas();
-  if (_perso.peutBougerVers(BAS))
+  regarderBas();
+  if (peutBougerVers(BAS, niveau))
   {
-    _perso.deplacer(0, TAILLE_CASE);
+    deplacer(0, TAILLE_CASE);
   }
 }
 
-// Vérifier si l'avatar touche un ennemi
-bool Avatar::touche(const Ennemi& ennemi) const
+// Tester si l'avatar touche un autre personnage
+bool Avatar::touche(const Personnage& autre) const
 {
-  return _perso.getX() == ennemi.getPersonnage().getX() &&
-         _perso.getY() == ennemi.getPersonnage().getY();
-}
-
-// Accesseur pour obtenir le personnage
-const Personnage& Avatar::getPersonnage() const
-{
-  return _perso;
+  return (getX() == autre.getX() && getY() == autre.getY());
 }

@@ -1,12 +1,13 @@
 #include "Personnage.h"
+#include "Niveau.h"
 
 // Constructeur par défaut
-Personnage:: Personnage() : _x(0), _y(0), _direction(BAS), _skin_x(0), _skin_y(0)
+Personnage::  Personnage() : _x(0), _y(0), _direction(BAS), _skin_x(0), _skin_y(0)
 {
 }
 
 // Constructeur
-Personnage::Personnage(Image& image, int x, int y, Direction direction, int skin_x, int skin_y)
+Personnage:: Personnage(Image& image, int x, int y, Direction direction, int skin_x, int skin_y)
   : _image(image), _x(x), _y(y), _direction(direction), _skin_x(skin_x), _skin_y(skin_y)
 {
 }
@@ -69,20 +70,37 @@ void Personnage::deplacer(int dx, int dy)
 }
 
 // Vérifier si le personnage peut bouger dans une direction
-bool Personnage::peutBougerVers(Direction dir) const
+bool Personnage::peutBougerVers(Direction dir, const Niveau& niveau) const
 {
+  int nouveau_x = _x;
+  int nouveau_y = _y;
+
   switch (dir)
   {
     case GAUCHE:
-      return _x > 0;
-    case HAUT:
-      return _y > 0;
+      nouveau_x -= TAILLE_CASE;
+      break;
     case DROITE:
-      return _x + TAILLE_CASE < LARGEUR_FENETRE;
+      nouveau_x += TAILLE_CASE;
+      break;
+    case HAUT:
+      nouveau_y -= TAILLE_CASE;
+      break;
     case BAS:
-      return _y + TAILLE_CASE < HAUTEUR_FENETRE;
+      nouveau_y += TAILLE_CASE;
+      break;
   }
-  return false;
+
+  // Vérifier les limites de l'écran
+  if (nouveau_x < 0 || nouveau_y < 0 ||
+      nouveau_x + TAILLE_CASE > LARGEUR_FENETRE ||
+      nouveau_y + TAILLE_CASE > HAUTEUR_FENETRE)
+  {
+    return false;
+  }
+
+  // Vérifier si la case est libre dans le niveau
+  return niveau.caseEstLibre(nouveau_x, nouveau_y);
 }
 
 // Inverser la direction

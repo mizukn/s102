@@ -2,12 +2,10 @@
 #define ENNEMI_H
 
 #include "Personnage.h"
+#include "Niveau.h"
 
-class Ennemi
+class Ennemi :  public Personnage
 {
-private:
-  Personnage _perso;
-
 public:
   // Constructeur
   Ennemi(Image& image, int x, int y, Direction direction, int skin_x, int skin_y);
@@ -15,14 +13,8 @@ public:
   // Constructeur par défaut
   Ennemi();
 
-  // Méthode pour dessiner l'ennemi
-  void dessiner() const;
-
-  // Méthode pour faire avancer l'ennemi automatiquement
-  void avancer();
-
-  // Accesseur pour obtenir le personnage
-  const Personnage& getPersonnage() const;
+  // Méthode pour faire avancer l'ennemi
+  void avancer(const Niveau& niveau);
 };
 
 #endif // ENNEMI_H

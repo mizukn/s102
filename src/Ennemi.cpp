@@ -1,54 +1,42 @@
 #include "Ennemi.h"
 
 // Constructeur par défaut
-Ennemi::Ennemi()
+Ennemi::Ennemi() : Personnage()
 {
 }
 
 // Constructeur
-Ennemi:: Ennemi(Image& image, int x, int y, Direction direction, int skin_x, int skin_y)
-  : _perso(image, x, y, direction, skin_x, skin_y)
+Ennemi::Ennemi(Image& image, int x, int y, Direction direction, int skin_x, int skin_y)
+  : Personnage(image, x, y, direction, skin_x, skin_y)
 {
 }
 
-// Dessiner l'ennemi
-void Ennemi::dessiner() const
+// Faire avancer l'ennemi
+void Ennemi::avancer(const Niveau& niveau)
 {
-  _perso.dessiner();
-}
-
-// Faire avancer l'ennemi automatiquement
-void Ennemi::avancer()
-{
-  Direction dir = _perso.getDirection();
-
-  // Si l'ennemi ne peut pas bouger dans sa direction, inverser
-  if (!_perso.peutBougerVers(dir))
+  // Si l'ennemi peut bouger dans sa direction actuelle
+  if (peutBougerVers(getDirection(), niveau))
   {
-    _perso.inverserDirection();
-    dir = _perso.getDirection();
+    // Avancer dans la direction actuelle
+    switch (getDirection())
+    {
+      case GAUCHE:
+        deplacer(-TAILLE_CASE, 0);
+        break;
+      case DROITE:
+        deplacer(TAILLE_CASE, 0);
+        break;
+      case HAUT:
+        deplacer(0, -TAILLE_CASE);
+        break;
+      case BAS:
+        deplacer(0, TAILLE_CASE);
+        break;
+    }
   }
-
-  // Avancer dans la direction courante
-  switch (dir)
+  else
   {
-    case DROITE:
-      _perso. deplacer(TAILLE_CASE, 0);
-      break;
-    case GAUCHE:
-      _perso.deplacer(-TAILLE_CASE, 0);
-      break;
-    case HAUT:
-      _perso.deplacer(0, -TAILLE_CASE);
-      break;
-    case BAS:
-      _perso.deplacer(0, TAILLE_CASE);
-      break;
+    // Sinon, inverser la direction
+    inverserDirection();
   }
-}
-
-// Accesseur pour obtenir le personnage
-const Personnage& Ennemi:: getPersonnage() const
-{
-  return _perso;
 }
