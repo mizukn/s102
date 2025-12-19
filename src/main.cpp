@@ -1,4 +1,6 @@
 #include <vector>
+#include <ctime>   // Nécessaire pour time()
+#include <cstdlib> // Nécessaire pour rand() et srand()
 
 #include "Moteur.h"
 #include "Image.h"
@@ -8,8 +10,11 @@
 
 using namespace std;
 
-int main(int, char**) // Version special du main, ne pas modifier
+int main(int, char**)
 {
+  // Initialisation du générateur de nombres aléatoires
+  srand(time(0));
+
   // Initialisation du jeu
   Moteur moteur("Mon super jeu vidéo", 8); // 8 FPS pour les animations
 
@@ -30,16 +35,15 @@ int main(int, char**) // Version special du main, ne pas modifier
   Avatar chevalier(personnages, 0, 0, BAS, 3, 0);
 
   // Créer les ennemis
-  // Ennemi 1 :  squelette (skin 10,2), se déplace verticalement
-  Ennemi ennemi1(personnages, TAILLE_CASE, 5 * TAILLE_CASE, HAUT, 10, 2);
+  // CORRECTION ICI : Squelette initialisé en (10, 0) au lieu de (10, 2)
+  // Cela évite qu'il tape dans la ligne du dessous (araignée) quand il regarde en HAUT (+3)
+  Ennemi ennemi1(personnages, TAILLE_CASE, 5 * TAILLE_CASE, HAUT, 10, 0);
 
   // Ennemi 2 : fantôme (skin 6,4), se déplace horizontalement
   Ennemi ennemi2(personnages, 5 * TAILLE_CASE, TAILLE_CASE, GAUCHE, 6, 4);
 
   bool quitter = false;
 
-  // Boucle de jeu, appelee a chaque fois que l'ecran doit etre mis a jour
-  // (en general, 60 fois par seconde)
   while (!quitter)
   {
     // I. Gestion des evenements
@@ -48,32 +52,24 @@ int main(int, char**) // Version special du main, ne pas modifier
     {
       switch (evenement)
       {
-        // QUITTER = croix de la fenetre ou Echap
         case QUITTER_APPUYE:
           quitter = true;
           break;
-
-        // Déplacer l'avatar avec les flèches
         case GAUCHE_APPUYE:
           chevalier.allerGauche();
           break;
-
         case DROITE_APPUYE:
           chevalier.allerDroite();
           break;
-
         case HAUT_APPUYE:
           chevalier.allerHaut();
           break;
-
         case BAS_APPUYE:
           chevalier.allerBas();
           break;
-
         default:
           break;
       }
-
       evenement = moteur.evenementRecu();
     }
 
@@ -94,9 +90,9 @@ int main(int, char**) // Version special du main, ne pas modifier
 
     // III. Generation de l'image à afficher
 
-    moteur.initialiserRendu(); // efface ce qui avait ete affiche precedemment et reinitalise en ecran noir
+    moteur.initialiserRendu();
 
-    // Afficher le fond en premier (pour qu'il soit derrière tout le reste)
+    // Afficher le fond
     fond.dessiner(0, 0);
 
     // Afficher les personnages
@@ -104,13 +100,6 @@ int main(int, char**) // Version special du main, ne pas modifier
     ennemi1.dessiner();
     ennemi2.dessiner();
 
-    /*
-      Affiche l'image en se cadencant sur la frequence de
-      rafraichissement de l'ecran (donc va en general mettre le
-      programme en pause jusqu'a ce que l'ecran soit rafraichi). En
-      general, 60 images fois par seconde, mais ca peut dependre du
-      materiel
-    */
     moteur.finaliserRendu();
   }
 
